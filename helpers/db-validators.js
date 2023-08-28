@@ -1,5 +1,5 @@
 import Role from '../models/role.js';
-import Usuario from '../models/usuario.js';
+import { Usuario, Categoria, Producto } from '../models/index.js';
 
 export const isValidRole = async ( role = '') => {
     const roleExist = await Role.findOne({ role });
@@ -22,4 +22,35 @@ export const existeUsuarioPorId = async( id ) => {
     if( !existeUsuario ) {
         throw new Error( `El id no existe ${ id }` );
     }
+};
+
+export const existeCategoria = async ( id ) => {
+    // Verificar si la categoría existe en la DB
+    const existeCategoriaPorId = await Categoria.findById( id );
+    if( !existeCategoriaPorId ) {
+        throw new Error( `El id no existe ${ id }` );
+    }
+}
+
+// Función para validar si una categoría existe por un nombre
+export const existeCategoriaPorNombre = async ( nombre = '', req ) => {
+    
+    // Verificar si la categoría existe en la DB
+    const existeCategoria = await Categoria.findOne( { nombre: nombre.toUpperCase() } );
+    if( !existeCategoria ) {
+        throw new Error( `El nombre no existe ${ nombre }` );
+    }
+
+    req.req.categoria = existeCategoria;
+};
+
+// Función para validar si un producto existe por su ID
+export const existeProductoPorId = async ( id = '', req ) => {
+    // Verificar si la producto existe en la DB
+    const existeProducto = await Producto.findById( id );
+    if( !existeProducto ) {
+        throw new Error( `El id no existe ${ id }` );
+    }
+
+    req.req.producto = existeProducto;
 }
